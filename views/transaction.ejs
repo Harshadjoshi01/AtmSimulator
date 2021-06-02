@@ -1,11 +1,30 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Transaction</title>
-  </head>
+<%- include('header'); -%>
+<div style="text-align: center">
+  <form action="/features" method="POST">
+    <button class="btn btn-primary btn-lg" type="submit" name="withdraw_cash">Withdraw Cash</button>
+    <br>
+    <button class="btn btn-primary btn-lg" type="submit" name="deposite_cash">Deposite Cash</button>
+    <br>
+    <button class="btn btn-primary btn-lg" type="submit" name="mini_statement">Mini Statement</button>
+    <br>
+    <button class="btn btn-primary btn-lg" type="submit" name="pin_change">Pin Change</button>
+    <br>
+    <button class="btn btn-primary btn-lg" type="submit" name="balance_inquary">Balance Inquary</button>
+    <br>
+    <button class="btn btn-primary btn-lg" type="submit" name="pin_change">Transfer Cash</button>
+    <br>
+    <button class="btn btn-primary btn-lg" type="submit" name="pin_change">Fast Cash</button>
+    <br>
+  </form>
+</div>
 
-  <body>
-    <h1>Transaction Page</h1>
-  </body>
-</html>
+
+
+
+
+
+
+
+
+
+<%- include('footer'); -%>

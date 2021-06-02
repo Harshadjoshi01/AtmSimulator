@@ -35,9 +35,11 @@ const db = mysql.createConnection({
 });
 
 app.get("/", function(req, res) {
+  res.locals.title = "ADDMEMBER";
   res.render("addmember")
 });
 app.get("/homepage", function(req, res) {
+  res.locals.title = "HOMEPAGE";
   res.render("homepage")
 });
 // app.get("/pin", function(req, res){
@@ -99,6 +101,7 @@ app.post("/pin", function(req, res) {
       }
     };
     if (equal) {
+      res.locals.title = "PIN PAGE";
       res.render("pin")
     } else {
       req.session.message = {
@@ -117,6 +120,7 @@ app.post("/transaction", function(req, res) {
       console.log(err);
     }
     if(entered_pin_no.toString() === result[0].pin_num.toString()){
+      res.locals.title = "TRANSCATION";
       res.render("transaction")
     } else {
       req.session.message = {

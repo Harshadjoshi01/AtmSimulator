@@ -1,33 +1,18 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-
-<head>
-  <meta charset="utf-8">
-  <title>Homepage</title>
-</head>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-<body>
+<%- include('header'); -%>
   <% if (message) { %>
     <div style="text-align: center" class="alert alert-<%= message.type %>">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong> <%= message.message %></strong>
       </div>
   <% } %>
-  <h1>Enter your card number</h1>
-  <div>
-    <form action="/pin" method="POST">
-      <input type="text" name="Cardno" placeholder="card_no" required autofocus>
-      <button type="submit" name="submit">Insert</button>
-    </form>
+  <div style="text-align: center">
+    <h1>Enter your card number</h1>
+    <div>
+      <form action="/pin" method="POST">
+        <input type="text" name="Cardno" placeholder="card_no" required autofocus>
+        <button type="submit" name="submit">Insert</button>
+      </form>
+    </div>
   </div>
-</body>
 
-</html>
+<%- include('footer'); -%>
