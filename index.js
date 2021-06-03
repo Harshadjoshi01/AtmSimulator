@@ -30,9 +30,9 @@ app.use((req, res, next) => {
 app.use(express.static("public"));
 
 const db = mysql.createConnection({
-  user: "root",
+  user: process.env.DATABASE_USER,
   host: "localhost",
-  password: "root",
+  password: process.env.DATABASE_PASSWORD,
   database: "bankdb",
   insecureAuth: true
 });
