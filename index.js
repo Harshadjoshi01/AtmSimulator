@@ -42,12 +42,17 @@ app.get("/homepage", function(req, res) {
   res.locals.title = "HOMEPAGE";
   res.render("homepage")
 });
-// app.get("/pin", function(req, res){
-//   res.render("pin")
-// })
+app.get("/transaction", function(req, res) {
+  res.locals.title = "TRANSCATION";
+  res.render("transaction")
+})
 app.post("/", function(req, res) {
-  var card_no = Math.floor(Math.random() * 100000000000000);
-  var pin_no = Math.floor(Math.random() * 1000000);
+  var max_card = 100000000000;
+  var min_card = 999999999999;
+  var max_pin = 100000;
+  var min_pin = 999999;
+  var card_no = Math.floor(Math.random() * (max_card - min_card + 1)) + min_card;
+  var pin_no = Math.floor(Math.random() * (max_pin - min_pin + 1)) + min_pin;
   var user_name = req.body.username;
   var user_email = req.body.email;
   var user_mobileno = req.body.mobileno;
@@ -115,11 +120,11 @@ app.post("/pin", function(req, res) {
 
 app.post("/transaction", function(req, res) {
   var entered_pin_no = req.body.pin_no;
-  db.query("SELECT pin_num FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result){
-    if (err){
+  db.query("SELECT pin_num FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+    if (err) {
       console.log(err);
     }
-    if(entered_pin_no.toString() === result[0].pin_num.toString()){
+    if (entered_pin_no.toString() === result[0].pin_num.toString()) {
       res.locals.title = "TRANSCATION";
       res.render("transaction")
     } else {
@@ -131,6 +136,86 @@ app.post("/transaction", function(req, res) {
     }
   });
 })
+
+app.post("/features", function(req, res) {
+  var pressed_button = req.body[Object.keys(req.body)[0]];
+  switch (pressed_button) {
+    case '1':
+      res.locals.title = "WITHDRAW";
+      res.render("withdraw")
+      break;
+    case '2':
+      res.locals.title = "DEPOSITE";
+      res.render("deposite")
+      break;
+    case '3':
+      res.locals.title = "MINISTATEMENT";
+      res.render("ministatement")
+      break;
+    case '4':
+      res.locals.title = "PINCHANGE";
+      res.render("pinchange")
+      break;
+    case '5':
+      res.locals.title = "BALANCEINQUARY";
+      res.render("balanceinquary")
+      break;
+    case '6':
+      res.locals.title = "TRANSFER";
+      res.render("transfer")
+      break;
+    case '7':
+      res.locals.title = "FASTCASH";
+      res.render("fastcash")
+      break;
+    default:
+      res.render("homepage")
+    }
+});
+
+  app.post("/withdraw", function(req, res) {
+    var amount = parseInt(req.body.amount);
+    db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+      if (err) {
+        console.log(err)
+      }
+      var balance = result[0].amount;
+      if (amount <= balance) {
+        db.query("UPDATE  user_data SET  user_data.amount=user_data.amount - ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
+          if (err) {
+            console.log(err)
+          }
+          req.session.message = {
+            type: "success",
+            message: "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
+          }
+          res.redirect("/transaction")
+        });
+      } else {
+        req.session.message = {
+          type: "danger",
+          message: "YOU DON'T HAVE SUFFICIENT AMOUNT TO WITHDRAW PLEASE ADD SOME CASH"
+        }
+        res.redirect("/transaction")
+      }
+    });
+  });
+  app.post("/deposite", function(req, res) {
+    var amount = parseInt(req.body.amount);
+    db.query("UPDATE  user_data SET  user_data.amount=user_data.amount + ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
+      if (err) {
+        console.log(err)
+      }
+      req.session.message = {
+        type: "success",
+        message: "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
+      }
+      res.redirect("/transaction")
+    });
+  });
+
+
+  
 app.listen(3000, function() {
   console.log("server is running @ port 3000");
 });

@@ -1,3 +1,17 @@
 <%- include('header'); -%>
-<h1>Withdraw Cash Page</h1>
+  <% if (message) { %>
+    <div style="text-align: center" class="alert alert-<%= message.type %>">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong> <%= message.message %></strong>
+      </div>
+  <% } %>
+  <div style="text-align: center">
+    <h1>You can't withdraw more then 10,000 at one time !</h1>
+    <form action="/withdraw" method="POST">
+      <label for="amount">Amout</label>
+      <input type="number" name="amount" min="1000" max="10000"autofocus required><br>
+      <button type="submit" class = "btn btn-primary btn-lg" name="button">Withdraw</button>
+    </form>
+
+  </div>
 <%- include('footer'); -%>
