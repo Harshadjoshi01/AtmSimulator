@@ -36,7 +36,7 @@ const db = mysql.createConnection({
   database: "bankdb",
   insecureAuth: true
 });
-
+var user_session = false;
 app.get("/", function(req, res) {
   res.locals.title = "ADDMEMBER";
   res.render("addmember")
@@ -46,8 +46,13 @@ app.get("/homepage", function(req, res) {
   res.render("homepage")
 });
 app.get("/transaction", function(req, res) {
-  res.locals.title = "TRANSCATION";
-  res.render("transaction")
+  if (user_session) {
+    res.locals.title = "TRANSCATION";
+    res.render("transaction");
+  } else {
+    res.redirect("/homepage");
+  }
+
 })
 app.post("/", function(req, res) {
   var max_card = 100000000000;
@@ -128,8 +133,9 @@ app.post("/transaction", function(req, res) {
       console.log(err);
     }
     if (entered_pin_no.toString() === result[0].pin_num.toString()) {
+      user_session = true;
       res.locals.title = "TRANSCATION";
-      res.render("transaction")
+      res.redirect("/transaction")
     } else {
       req.session.message = {
         type: "danger",
@@ -160,8 +166,17 @@ app.post("/features", function(req, res) {
       res.render("pinchange")
       break;
     case '5':
-      res.locals.title = "BALANCEINQUARY";
-      res.render("balanceinquary")
+      db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+        if (err) {
+          console.log(err)
+        }
+        var balance = result[0].amount.toString();
+        req.session.message = {
+          type: "success",
+          message: "YOUR CURRENT ACCOUNT BALANCE IS " + balance + " Rs"
+        }
+        res.redirect("/transaction")
+      })
       break;
     case '6':
       res.locals.title = "TRANSFER";
@@ -171,53 +186,61 @@ app.post("/features", function(req, res) {
       res.locals.title = "FASTCASH";
       res.render("fastcash")
       break;
+    case '8':
+      user_session = false;
+      res.redirect("/homepage");
+      break;
     default:
-      res.render("homepage")
-    }
+      user_session = false;
+      res.render("/homepage")
+  }
 });
 
-  app.post("/withdraw", function(req, res) {
-    var amount = parseInt(req.body.amount);
-    db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
-      if (err) {
-        console.log(err)
-      }
-      var balance = result[0].amount;
-      if (amount <= balance) {
-        db.query("UPDATE  user_data SET  user_data.amount=user_data.amount - ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
-          if (err) {
-            console.log(err)
-          }
-          req.session.message = {
-            type: "success",
-            message: "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
-          }
-          res.redirect("/transaction")
-        });
-      } else {
+app.post("/withdraw", function(req, res) {
+  var amount = parseInt(req.body.amount);
+  db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+    if (err) {
+      console.log(err)
+    }
+    var balance = result[0].amount;
+    if (amount <= balance) {
+      db.query("UPDATE  user_data SET  user_data.amount=user_data.amount - ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
+        if (err) {
+          console.log(err)
+        }
         req.session.message = {
-          type: "danger",
-          message: "YOU DON'T HAVE SUFFICIENT AMOUNT TO WITHDRAW PLEASE ADD SOME CASH"
+          type: "success",
+          message: "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
         }
         res.redirect("/transaction")
-      }
-    });
-  });
-  app.post("/deposite", function(req, res) {
-    var amount = parseInt(req.body.amount);
-    db.query("UPDATE  user_data SET  user_data.amount=user_data.amount + ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
-      if (err) {
-        console.log(err)
-      }
+      });
+    } else {
       req.session.message = {
-        type: "success",
-        message: "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
+        type: "danger",
+        message: "YOU DON'T HAVE SUFFICIENT AMOUNT TO WITHDRAW PLEASE ADD SOME CASH"
       }
       res.redirect("/transaction")
-    });
+    }
   });
+});
+app.post("/deposite", function(req, res) {
+  var amount = parseInt(req.body.amount);
+  db.query("UPDATE  user_data SET  user_data.amount=user_data.amount + ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
+    if (err) {
+      console.log(err)
+    }
+    req.session.message = {
+      type: "success",
+      message: "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
+    }
+    res.redirect("/transaction")
+  });
+});
 
-
+app.post("/exit", function(req, res) {
+  user_session = false;
+  res.redirect("/homepage");
+})
 
 app.listen(3000, function() {
   console.log("server is running @ port 3000");

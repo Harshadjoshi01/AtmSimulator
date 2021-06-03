@@ -1,3 +1,12 @@
 <%- include('header'); -%>
-<h1>Transfer Cash Page</h1>
+<div style="text-align: center">
+  <form action="/transfer" method="POST">
+    <h1>You can't tranfer more then 100,000 at one time !</h1>
+    <label for="Account number of user whome you want to tranfer money"></label>
+    <input type="text" name="account_num" autofocus required><br>
+    <label for="Amount to tranfer"></label>
+    <input type="number" name="amount_tranfer" min="1000" max="100000"required><br>
+    <button type="submit" class="btn btn-primary btn-lg"name="tranfer">TRANSFER</button><br>
+  </form>
+</div>
 <%- include('footer'); -%>
