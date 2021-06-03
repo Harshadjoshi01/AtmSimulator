@@ -1,0 +1,28 @@
+<%- include('header'); -%>
+<% if (message) { %>
+<div style="text-align: center" class="alert alert-<%= message.type %>">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong> <%= message.message %></strong>
+</div>
+<% } %>
+<div style="text-align: center">
+  <h1>File the form to get your credit card no.</h1>
+  <div>
+    <form action="/" method="POST">
+      <input type="text" name="username" placeholder="user_name" required autofocus>
+      <br>
+      <input type="text" name="email" placeholder="user_email" required>
+      <br>
+      <input type="text" name="mobileno" placeholder="user_mobileno" required>
+      <br>
+      <button class="btn btn-primary" type="submit" name="submit">Send</button>
+      <br>
+    </form>
+  </div>
+  <div>
+    <a href="/homepage"><button class="btn btn-primary">Homepage</button></a>
+  </div>
+</div>
+
+
+<%- include('footer'); -%>

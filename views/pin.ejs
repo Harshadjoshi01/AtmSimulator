@@ -1,0 +1,18 @@
+<%- include('header'); -%>
+<% if (message) { %>
+<div style="text-align: center" class="alert alert-<%= message.type %>">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong> <%= message.message %></strong>
+</div>
+<% } %>
+<div style="text-align: center">
+  <h1>Enter Your PIN num here</h1>
+  <div>
+    <form action="/transaction" method="POST">
+      <input type="text" name="pin_no" placeholder="pin_no" required autofocus>
+      <button type="submit" name="submit">Insert</button>
+    </form>
+  </div>
+</div>
+
+<%- include('footer'); -%>
