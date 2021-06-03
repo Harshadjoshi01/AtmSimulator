@@ -4,7 +4,10 @@ const mysql = require("mysql");
 const nodemailer = require('nodemailer');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const app = express();
+require('dotenv').config();
+//use process.env.{VARIABLE-NAME}
+
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
