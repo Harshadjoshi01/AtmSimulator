@@ -7,7 +7,7 @@ const session = require('express-session');
 require('dotenv').config();
 //use process.env.{VARIABLE-NAME}
 
-
+const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
@@ -218,7 +218,7 @@ app.post("/features", function(req, res) {
   });
 
 
-  
+
 app.listen(3000, function() {
   console.log("server is running @ port 3000");
 });
