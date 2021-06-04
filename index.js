@@ -36,6 +36,13 @@ const db = mysql.createConnection({
   database: "bankdb",
   insecureAuth: true
 });
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  }
+});
 var user_session = false;
 app.get("/", function(req, res) {
   res.locals.title = "ADDMEMBER";
@@ -65,13 +72,6 @@ app.post("/", function(req, res) {
   var user_email = req.body.email;
   var user_mobileno = req.body.mobileno;
   var msg = "Your Card Number is " + card_no.toString() + " and Your Pin Number is " + pin_no.toString();
-  //   var transporter = nodemailer.createTransport({
-  //     service: 'gmail',
-  //     auth: {
-  //       user: 'atmsamulator@gmail.com',
-  //       pass: 'atm@samulator3448'
-  //     }
-  //   });
   //   var mailOptions = {
   //     from: 'atmsamulator@gmail.com',
   //     to: user_email,
@@ -237,11 +237,39 @@ app.post("/deposite", function(req, res) {
   });
 });
 
-app.post("/exit", function(req, res) {
-  user_session = false;
-  res.redirect("/homepage");
-})
-
+app.post("/transfer", function(req, res){
+  var account_num = parseInt(req.body.account_num);
+  var amount_transfer = parseInt(req.body.amount_tranfer);
+  db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+    if (err) {
+      console.log(err)
+    }
+    var balance = result[0].amount;
+    if (amount_transfer <= balance) {
+      db.query("UPDATE  user_data SET  user_data.amount=user_data.amount + ? WHERE  account_num = ? ", [amount_transfer, account_num], function(err, result) {
+        if (err) {
+          console.log(err)
+        }
+        db.query("UPDATE  user_data SET  user_data.amount=user_data.amount - ? WHERE  Cardno = ?", [amount_transfer, user_card_no], function(err, result) {
+          if (err) {
+            console.log(err)
+          }
+          req.session.message = {
+            type: "success",
+            message: "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY TRANSFERED TO ACCOUNT NUMBER " + req.body.account_num.toString() 
+          }
+          res.redirect("/transaction")
+        });
+      });
+    } else {
+      req.session.message = {
+        type: "danger",
+        message: "YOU DON'T HAVE SUFFICIENT AMOUNT TO TRANSFER PLEASE ADD SOME CASH"
+      }
+      res.redirect("/transaction")
+    }
+  });
+});
 app.listen(3000, function() {
   console.log("server is running @ port 3000");
 });
