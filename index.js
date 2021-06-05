@@ -392,6 +392,26 @@ app.post("/pinchange", function(req, res){
       if(err){
         console.log(err);
       }
+      db.query("select Email from user_data where Cardno = ?", [user_card_no], function(err, result){
+        if (err) {
+          console.log(err);
+        }
+        let user_email = result[0].Email;
+        let msg = "YOUR PIN HAS BEEN CHANGED SUCCESSFULLY IF YOU HAVE NOT CHANGED YOUR PIN PLEASE CONTACT TO NEAREST BANK BRANCH"
+          var mailOptions = {
+            from: process.env.EMAIL,
+            to: user_email,
+            subject: 'Email From Atmsimulator',
+            text: msg
+          };
+          transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        })
+      })
       req.session.message = {
         type: "warning",
         message: "YOUR PIN HAS BEEN CHANGED SUCCESSFULLY"
