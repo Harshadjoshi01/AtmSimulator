@@ -6,13 +6,16 @@
 </div>
 <% } %>
 <div style="text-align: center">
-  <h1>File the form to get your credit card no.</h1>
+  <h1>Fill the form to get your credit card no.</h1>
   <div>
     <form action="/" method="POST">
+      <label for="username">Username</label>
       <input type="text" name="username" placeholder="user_name" required autofocus>
       <br>
-      <input type="text" name="email" placeholder="user_email" required>
+      <label for="username">Email</label>
+      <input type="email" name="email" placeholder="user_email" required>
       <br>
+      <label for="username">Mobile No.</label>
       <input type="text" name="mobileno" placeholder="user_mobileno" required>
       <br>
       <button class="btn btn-primary" type="submit" name="submit">Send</button>
