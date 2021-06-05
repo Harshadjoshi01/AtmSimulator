@@ -1,3 +1,17 @@
 <%- include('header'); -%>
-<h1>Fast Cash Page</h1>
+<div class="form-group" style="text-align: center">
+    <h1>Fast Cash Withdrawal</h1>
+    <form action="/fastcash" method="POST">
+    <button class="btn btn-secondary btn-lg" type="submit" name="1000" value="1">1000 Rs</button>
+    <br>
+    <button class="btn btn-secondary btn-lg" type="submit" name="2000" value="2">2000 Rs</button>
+    <br>
+    <button class="btn btn-secondary btn-lg" type="submit" name="5000" value="3">5000 Rs</button>
+    <br>
+    <button class="btn btn-secondary btn-lg" type="submit" name="10000" value="4">10000 Rs</button>
+    <br>
+    </form>
+
+</div>
+
 <%- include('footer'); -%>

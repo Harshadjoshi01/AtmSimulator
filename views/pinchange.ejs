@@ -1,3 +1,10 @@
 <%- include('header'); -%>
-<h1>Pin Change Page</h1>
+<div class="form-group" style="text-align: center">
+    <form action="/pinchange" method="POST">
+      <h1>Your Pin must be of 6 digits!</h1><br>
+      <label for="new_pin">New Pin</label>
+      <input type="password" name="new_pin" autofocus required><br>
+      <button type="submit" class="btn btn-dark btn-lg"name="pin_change">SET PIN</button><br>
+    </form>
+  </div>
 <%- include('footer'); -%>

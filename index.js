@@ -72,19 +72,19 @@ app.post("/", function(req, res) {
   var user_email = req.body.email;
   var user_mobileno = req.body.mobileno;
   var msg = "Your Card Number is " + card_no.toString() + " and Your Pin Number is " + pin_no.toString();
-  //   var mailOptions = {
-  //     from: 'atmsamulator@gmail.com',
-  //     to: user_email,
-  //     subject: 'Sending Email using Node.js',
-  //     text: msg
-  //   };
-  //   transporter.sendMail(mailOptions, function(error, info){
-  //   if (error) {
-  //     console.log(error);
-  //   } else {
-  //     console.log('Email sent: ' + info.response);
-  //   }
-  // });
+    var mailOptions = {
+      from: process.env.EMAIL,
+      to: user_email,
+      subject: 'Sending Email using Node.js',
+      text: msg
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
   db.query("INSERT INTO user_data (Username, Email, Mobileno, Cardno, pin_num) VALUES (?, ?, ?, ?, ?)", [user_name, user_email, user_mobileno, card_no, pin_no], function(err, result) {
     if (err) {
       console.log(err);
@@ -158,6 +158,16 @@ app.post("/features", function(req, res) {
       res.render("deposite")
       break;
     case '3':
+      var current = new Date();
+      current.toLocaleString();
+      db.query("select withdraw_amount, deposite_amount, tran_time from trans where account_num = 111  order by tran_num desc limit 3", function (err, result){
+        if (err) {
+          console.log(err);
+        }
+        console.log(result[0].withdraw_amount);
+        console.log(result[1].withdraw_amount);
+        console.log(result[2].withdraw_amount);
+      })
       res.locals.title = "MINISTATEMENT";
       res.render("ministatement")
       break;
@@ -198,21 +208,48 @@ app.post("/features", function(req, res) {
 
 app.post("/withdraw", function(req, res) {
   var amount = parseInt(req.body.amount);
+  var current = new Date();
+  var tran_time = current.toLocaleString();
   db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
     if (err) {
       console.log(err)
     }
     var balance = result[0].amount;
     if (amount <= balance) {
+      db.query("select Email from user_data where Cardno = ?", [user_card_no], function(err, result){
+        if (err) {
+          console.log(err);
+        }
+        let user_email = result[0].Email;
+        let msg = "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
+          var mailOptions = {
+            from: process.env.EMAIL,
+            to: user_email,
+            subject: 'Email From Atmsimulator',
+            text: msg
+          };
+          transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+      });
       db.query("UPDATE  user_data SET  user_data.amount=user_data.amount - ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
         if (err) {
           console.log(err)
         }
-        req.session.message = {
-          type: "success",
-          message: "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
-        }
-        res.redirect("/transaction")
+        db.query("insert into trans(Cardno, withdraw_amount, tran_time) values (?, ?, ?)",[user_card_no, amount, tran_time], function(err, result){
+          if(err){
+            console.log(err);
+          }
+          req.session.message = {
+            type: "success",
+            message: "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
+          }
+          res.redirect("/transaction")
+        });
       });
     } else {
       req.session.message = {
@@ -270,6 +307,30 @@ app.post("/transfer", function(req, res){
     }
   });
 });
+
+app.post("/pinchange", function(req, res){
+  var new_pin = parseInt(req.body.new_pin);
+  if ((new_pin >= 100000) && (new_pin < 999999)){
+    db.query("UPDATE  user_data SET  user_data.pin_num = ? WHERE  Cardno = ?", [new_pin, user_card_no], function(err, result){
+      if(err){
+        console.log(err);
+      }
+      req.session.message = {
+        type: "warning",
+        message: "YOUR PIN HAS BEEN CHANGED SUCCESSFULLY"
+      }
+      res.redirect("/transaction")
+    })
+  } else {
+    req.session.message = {
+      type: "danger",
+      message: "PLEASE ENTER A VALID PIN NUMBER"
+    }
+    res.redirect("/transaction")
+  }
+
+})
+
 app.listen(3000, function() {
   console.log("server is running @ port 3000");
 });
