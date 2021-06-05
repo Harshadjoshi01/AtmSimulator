@@ -262,40 +262,117 @@ app.post("/withdraw", function(req, res) {
 });
 app.post("/deposite", function(req, res) {
   var amount = parseInt(req.body.amount);
+  var current = new Date();
+  var tran_time = current.toLocaleString();
+  db.query("select Email from user_data where Cardno = ?", [user_card_no], function(err, result){
+    if (err) {
+      console.log(err);
+    }
+    let user_email = result[0].Email;
+    let msg = "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
+      var mailOptions = {
+        from: process.env.EMAIL,
+        to: user_email,
+        subject: 'Email From Atmsimulator',
+        text: msg
+      };
+      transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+  });
+
   db.query("UPDATE  user_data SET  user_data.amount=user_data.amount + ? WHERE  Cardno = ?", [amount, user_card_no], function(err, result) {
     if (err) {
       console.log(err)
     }
-    req.session.message = {
-      type: "success",
-      message: "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
-    }
-    res.redirect("/transaction")
+    db.query("insert into trans(Cardno, deposite_amount, tran_time) values (?, ?, ?)",[user_card_no, amount, tran_time], function(err, result){
+      if(err){
+        console.log(err);
+      }
+      req.session.message = {
+        type: "success",
+        message: "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
+      }
+      res.redirect("/transaction")
+    });
   });
 });
 
 app.post("/transfer", function(req, res){
   var account_num = parseInt(req.body.account_num);
   var amount_transfer = parseInt(req.body.amount_tranfer);
-  db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+  var current = new Date();
+  var tran_time = current.toLocaleString();
+  db.query("SELECT amount , Username, account_num FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
     if (err) {
       console.log(err)
     }
     var balance = result[0].amount;
+    let user_name = result[0].Username;
+    let user_acc_num = result[0].account_num;
     if (amount_transfer <= balance) {
+      db.query("select Email from user_data where Cardno = ?", [user_card_no], function(err, result){
+        if (err) {
+          console.log(err);
+        }
+        let user_email = result[0].Email;
+        let msg = "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY TRANSFERED TO ACCOUNT NUMBER " + req.body.account_num.toString()
+          var mailOptions = {
+            from: process.env.EMAIL,
+            to: user_email,
+            subject: 'Email From Atmsimulator',
+            text: msg
+          };
+          transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+      });
       db.query("UPDATE  user_data SET  user_data.amount=user_data.amount + ? WHERE  account_num = ? ", [amount_transfer, account_num], function(err, result) {
         if (err) {
           console.log(err)
         }
         db.query("UPDATE  user_data SET  user_data.amount=user_data.amount - ? WHERE  Cardno = ?", [amount_transfer, user_card_no], function(err, result) {
           if (err) {
-            console.log(err)
+            console.log(err) 
           }
-          req.session.message = {
-            type: "success",
-            message: "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY TRANSFERED TO ACCOUNT NUMBER " + req.body.account_num.toString() 
-          }
-          res.redirect("/transaction")
+          db.query("insert into trans(Cardno, transfer_amount, transfer_account_num, tran_time) values (?, ?, ?, ?)",[user_card_no, amount_transfer ,account_num, tran_time], function(err, result){
+            if(err){
+              console.log(err);
+            }
+            db.query("select Email from user_data where account_num = ?", [account_num], function(err, result){
+              if (err) {
+                console.log(err);
+              }
+              let user_email = result[0].Email;
+              let msg = "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY CREDITED TO YOUR ACCOUNT FROM " + user_acc_num.toString() + " ACCOUNT HOLDER NAME " + user_name.toString() + "."
+                var mailOptions = {
+                  from: process.env.EMAIL,
+                  to: user_email,
+                  subject: 'Email From Atmsimulator',
+                  text: msg
+                };
+                transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                } else {
+                  console.log('Email sent: ' + info.response);
+                }
+              })
+            })
+            req.session.message = {
+              type: "success",
+              message: "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY TRANSFERED TO ACCOUNT NUMBER " + req.body.account_num.toString() 
+            }
+            res.redirect("/transaction")
+          });
         });
       });
     } else {
@@ -305,7 +382,7 @@ app.post("/transfer", function(req, res){
       }
       res.redirect("/transaction")
     }
-  });
+  })
 });
 
 app.post("/pinchange", function(req, res){
