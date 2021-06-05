@@ -97,6 +97,8 @@ app.post("/", function(req, res) {
   });
 });
 
+// User loged in after log in validation of its card no and pin no and all features
+
 var user_card_no = 0;
 app.post("/pin", function(req, res) {
   user_card_no = req.body.Cardno;
@@ -158,18 +160,46 @@ app.post("/features", function(req, res) {
       res.render("deposite")
       break;
     case '3':
-      var current = new Date();
-      current.toLocaleString();
-      db.query("select withdraw_amount, deposite_amount, tran_time from trans where account_num = 111  order by tran_num desc limit 3", function (err, result){
+      db.query("select withdraw_amount, deposite_amount, transfer_amount, transfer_account_num, tran_time from trans where Cardno = ?  order by tran_num desc limit 3", [user_card_no], function (err, result){
         if (err) {
           console.log(err);
         }
-        console.log(result[0].withdraw_amount);
-        console.log(result[1].withdraw_amount);
-        console.log(result[2].withdraw_amount);
-      })
-      res.locals.title = "MINISTATEMENT";
-      res.render("ministatement")
+        var wa_1 = result[0].withdraw_amount
+        var da_1 = result[0].deposite_amount
+        var tr_amount_1 = result[0].transfer_amount
+        var tr_acc_1 = result[0].transfer_account_num
+        var tr_time_1 = result[0].tran_time
+        var wa_2 = result[1].withdraw_amount
+        var da_2 = result[1].deposite_amount
+        var tr_amount_2 = result[1].transfer_amount
+        var tr_acc_2 = result[1].transfer_account_num
+        var tr_time_2 = result[1].tran_time
+        var wa_3 = result[2].withdraw_amount
+        var da_3 = result[2].deposite_amount
+        var tr_amount_3 = result[2].transfer_amount
+        var tr_acc_3 = result[2].transfer_account_num
+        var tr_time_3 = result[2].tran_time
+        res.locals.title = "MINISTATEMENT";
+        res.render("ministatement",{
+          
+          c_1_wa : wa_1,
+          c_1_da : da_1 ,
+          c_1_ta : tr_amount_1,
+          c_1_tac : tr_acc_1,
+          c_1_ti : tr_time_1,
+          c_2_wa : wa_2,
+          c_2_da : da_2,
+          c_2_ta : tr_amount_2,
+          c_2_tac : tr_acc_2,
+          c_2_ti : tr_time_2,
+          c_3_wa : wa_3,
+          c_3_da : da_3,
+          c_3_ta : tr_amount_3,
+          c_3_tac : tr_acc_3,
+          c_3_ti : tr_time_3
+        
+        })
+      });
       break;
     case '4':
       res.locals.title = "PINCHANGE";
@@ -191,10 +221,6 @@ app.post("/features", function(req, res) {
     case '6':
       res.locals.title = "TRANSFER";
       res.render("transfer")
-      break;
-    case '7':
-      res.locals.title = "FASTCASH";
-      res.render("fastcash")
       break;
     case '8':
       user_session = false;

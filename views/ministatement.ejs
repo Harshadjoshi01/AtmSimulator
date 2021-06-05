@@ -1,3 +1,65 @@
-<%- include('header'); -%>
-<h1>Mini Statement Page</h1>
-<%- include('footer'); -%>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title><%= title %></title>
+</head>
+<!-- Latest compiled and minified CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+<body>
+
+<div style="text-align: center">
+    <table class="table table-striped table-dark">
+        <thead>
+          <tr>
+            <th scope="col">Sr no.</th>
+            <th scope="col">Withdraw Amount</th>
+            <th scope="col">Deposite Amount</th>
+            <th scope="col">Transfer Amount</th>
+            <th scope="col">Transfer Account Number</th>
+            <th scope="col">Transaction Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td><%= c_1_wa  %></td>
+            <td><%= c_1_da  %></td>
+            <td><%= c_1_ta  %></td>
+            <td><%= c_1_tac  %></td>
+            <td><%= c_1_ti  %></td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td><%= c_2_wa  %></td>
+            <td><%= c_2_da  %></td>
+            <td><%= c_2_ta  %></td>
+            <td><%= c_2_tac  %></td>
+            <td><%= c_2_ti  %></td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td><%= c_3_wa  %></td>
+            <td><%= c_3_da  %></td>
+            <td><%= c_3_ta  %></td>
+            <td><%= c_3_tac  %></td>
+            <td><%= c_3_ti  %></td>
+          </tr>
+        </tbody>
+      </table>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
+<footer>
+  <div style="text-align: center">
+
+      <h4>Copyright 2021 @ATMSIMULATOR</h4>
+  </div>
+
+</footer>
+
+</html>
+
