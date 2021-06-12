@@ -2,8 +2,10 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const mysql = require("mysql");
 const nodemailer = require('nodemailer');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const bcrypt = require('bcryptjs');
+var MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 //use process.env.{VARIABLE-NAME}
 
@@ -13,12 +15,63 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-app.use(cookieParser('secret'))
-app.use(session({
-  cookie: {
-    maxAge: null
+
+var options = {
+  host: 'localhost',
+  port: 3306,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: 'bankdb',
+  insecureAuth: true,
+  	// Whether or not to automatically check for and clear expired sessions:
+	clearExpired: true,
+	// How frequently expired sessions will be cleared; milliseconds:
+	checkExpirationInterval: 100000,
+	// The maximum age of a valid session; milliseconds:
+	expiration: 600000,
+  schema: {
+		tableName: 'usersession',
+		columnNames: {
+			session_id: 'user_session_id',
+			expires: 'session_expires',
+			data: 'user_data'
+		}
+	}
+};
+
+var sessionStore = new MySQLStore(options);
+const db = mysql.createConnection(options);
+db.connect(function(err) {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+    return;
   }
-}))
+ 
+  console.log('connected as id ' + db.threadId);
+});
+// app.use(cookieParser('secret'))
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore
+  })
+);
+
+const isAuth = (req, res, next) => {
+  if(req.session.isAuth) {
+    next();
+  } else {
+    res.redirect("/");
+  }
+}
+
+// app.use(session({
+//   cookie: {
+//     maxAge: null
+//   }
+// }))
 
 //flash message middleware
 app.use((req, res, next) => {
@@ -29,13 +82,13 @@ app.use((req, res, next) => {
 
 app.use(express.static("public"));
 
-const db = mysql.createConnection({
-  user: process.env.DATABASE_USER,
-  host: "localhost",
-  password: process.env.DATABASE_PASSWORD,
-  database: "bankdb",
-  insecureAuth: true
-});
+// const db = mysql.createConnection({
+//   user: process.env.DATABASE_USER,
+//   host: "localhost",
+//   password: process.env.DATABASE_PASSWORD,
+//   database: "bankdb",
+//   insecureAuth: true
+// });
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -43,58 +96,149 @@ const transporter = nodemailer.createTransport({
     pass: process.env.PASSWORD
   }
 });
+
 var user_session = false;
 app.get("/", function(req, res) {
-  res.locals.title = "ADDMEMBER";
-  res.render("addmember")
-});
-app.get("/homepage", function(req, res) {
   res.locals.title = "HOMEPAGE";
   res.render("homepage")
 });
-app.get("/transaction", function(req, res) {
-  if (user_session) {
+
+app.get("/addmember", function(req, res) {
+  res.locals.title = "ADDMEMBER";
+  res.render("addmember")
+});
+
+app.get("/transaction", isAuth, function(req, res) {
     res.locals.title = "TRANSCATION";
     res.render("transaction");
-  } else {
-    res.redirect("/homepage");
-  }
+});
 
-})
-app.post("/", function(req, res) {
+app.get("/withdraw", isAuth, function(req, res) {
+  res.locals.title = "WITHDRAW";
+  res.render("withdraw");
+});
+
+app.get("/deposite", isAuth, function(req, res) {
+  res.locals.title = "DEPOSITE";
+  res.render("deposite");
+});
+
+app.get("/ministatement", isAuth, function(req, res) {
+  db.query("select withdraw_amount, deposite_amount, transfer_amount, transfer_account_num, tran_time from trans where Cardno = ?  order by tran_num desc limit 3", [user_card_no], function (err, result){
+    if (err) {
+      console.log(err);
+    }
+    var wa_1 = result[0].withdraw_amount
+    var da_1 = result[0].deposite_amount
+    var tr_amount_1 = result[0].transfer_amount
+    var tr_acc_1 = result[0].transfer_account_num
+    var tr_time_1 = result[0].tran_time
+    var wa_2 = result[1].withdraw_amount
+    var da_2 = result[1].deposite_amount
+    var tr_amount_2 = result[1].transfer_amount
+    var tr_acc_2 = result[1].transfer_account_num
+    var tr_time_2 = result[1].tran_time
+    var wa_3 = result[2].withdraw_amount
+    var da_3 = result[2].deposite_amount
+    var tr_amount_3 = result[2].transfer_amount
+    var tr_acc_3 = result[2].transfer_account_num
+    var tr_time_3 = result[2].tran_time
+    res.locals.title = "MINISTATEMENT";
+    res.render("ministatement",{
+      
+      c_1_wa : wa_1,
+      c_1_da : da_1 ,
+      c_1_ta : tr_amount_1,
+      c_1_tac : tr_acc_1,
+      c_1_ti : tr_time_1,
+      c_2_wa : wa_2,
+      c_2_da : da_2,
+      c_2_ta : tr_amount_2,
+      c_2_tac : tr_acc_2,
+      c_2_ti : tr_time_2,
+      c_3_wa : wa_3,
+      c_3_da : da_3,
+      c_3_ta : tr_amount_3,
+      c_3_tac : tr_acc_3,
+      c_3_ti : tr_time_3
+    
+    })
+  });
+});
+
+app.get("/pinchange", isAuth, function(req, res) {
+  res.locals.title = "PINCHANGE";
+  res.render("pinchange");
+});
+
+app.get("/balance", isAuth, function(req, res) {
+  db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+    if (err) {
+      console.log(err)
+    }
+    var balance = result[0].amount.toString();
+    req.session.message = {
+      type: "success",
+      message: "YOUR CURRENT ACCOUNT BALANCE IS " + balance + " Rs"
+    }
+    res.redirect("/transaction")
+  })
+});
+
+app.get("/transfer", isAuth, function(req, res) {
+  res.locals.title = "TRANSFER";
+  res.render("transfer");
+});
+
+app.post("/addmember", async (req, res) => {
   var max_card = 100000000000;
   var min_card = 999999999999;
   var max_pin = 100000;
   var min_pin = 999999;
   var card_no = Math.floor(Math.random() * (max_card - min_card + 1)) + min_card;
   var pin_no = Math.floor(Math.random() * (max_pin - min_pin + 1)) + min_pin;
+  var hasdPsw = await bcrypt.hash(pin_no.toString(), 10);
   var user_name = req.body.username;
   var user_email = req.body.email;
   var user_mobileno = req.body.mobileno;
-  var msg = "Your Card Number is " + card_no.toString() + " and Your Pin Number is " + pin_no.toString();
-    var mailOptions = {
-      from: process.env.EMAIL,
-      to: user_email,
-      subject: 'Sending Email using Node.js',
-      text: msg
-    };
-    transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
+  db.query("select Email from user_data where Email = ?",[user_email], function(err, result){
+    if(err){
+      console.log(err)
+    }
+    if(result.length == 0){
+
+      var msg = "Your Card Number is " + card_no.toString() + " and Your Pin Number is " + pin_no.toString();
+      var mailOptions = {
+        from: process.env.EMAIL,
+        to: user_email,
+        subject: 'Sending Email using Node.js',
+        text: msg
+      };
+      transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+    db.query("INSERT INTO user_data (Username, Email, Mobileno, Cardno, pin_num) VALUES (?, ?, ?, ?, ?)", [user_name, user_email, user_mobileno, card_no, hasdPsw], function(err, result) {
+      if (err) {
+        console.log(err);
+      }
+      req.session.message = {
+        type: "success",
+        message: 'An Email is sent to your Email Address With Your Card Number and Pin Number'
+      }
+      res.redirect("/addmember")
+    });
     } else {
-      console.log('Email sent: ' + info.response);
+      req.session.message = {
+        type: "danger",
+        message: 'Email already exists please change your email address'
+      }
+      res.redirect("/addmember")
     }
-  });
-  db.query("INSERT INTO user_data (Username, Email, Mobileno, Cardno, pin_num) VALUES (?, ?, ?, ?, ?)", [user_name, user_email, user_mobileno, card_no, pin_no], function(err, result) {
-    if (err) {
-      console.log(err);
-    }
-    req.session.message = {
-      type: "success",
-      message: 'An Email is sent to your Email Address With Your Card Number and Pin Number'
-    }
-    res.redirect("/")
-  });
+  })
 });
 
 // User loged in after log in validation of its card no and pin no and all features
@@ -102,49 +246,41 @@ app.post("/", function(req, res) {
 var user_card_no = 0;
 app.post("/pin", function(req, res) {
   user_card_no = req.body.Cardno;
-  var data = [];
-  var equal = false;
-  db.query("SELECT Cardno FROM user_data", function(err, result) {
+  db.query("SELECT Cardno FROM user_data WHERE Cardno = ?", [user_card_no],function(err, result) {
     if (err) {
       console.log(err);
     }
-    data = result;
-    for (var i = 0; i < data.length; i++) {
-      if (user_card_no === data[i].Cardno.toString()) {
-        equal = true;
-        break;
-      }
-    };
-    if (equal) {
-      res.locals.title = "PIN PAGE";
-      res.render("pin")
-    } else {
+    if(result.length == 0){
       req.session.message = {
         type: "danger",
         message: 'PLEASE INSERT A VALID CARD NUMBER'
       }
-      res.redirect("/homepage")
+      res.redirect("/")
+    } else {
+      res.locals.title = "PIN PAGE";
+      res.render("pin")
     }
   });
 });
 
 app.post("/transaction", function(req, res) {
   var entered_pin_no = req.body.pin_no;
-  db.query("SELECT pin_num FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
+  db.query("SELECT pin_num FROM user_data WHERE Cardno = ?", [user_card_no], async function(err, result) {
     if (err) {
       console.log(err);
     }
-    if (entered_pin_no.toString() === result[0].pin_num.toString()) {
-      user_session = true;
-      res.locals.title = "TRANSCATION";
-      res.redirect("/transaction")
-    } else {
+    isMatch = await bcrypt.compare(entered_pin_no, result[0].pin_num);
+
+    if(!isMatch) {
       req.session.message = {
         type: "danger",
         message: 'PLEASE INSERT A VALID PIN NUMBER'
       }
-      res.redirect("/homepage")
+      res.redirect("/")
     }
+    req.session.isAuth = true;
+    res.locals.title = "TRANSCATION";
+    res.redirect("/transaction")
   });
 })
 
@@ -152,83 +288,34 @@ app.post("/features", function(req, res) {
   var pressed_button = req.body[Object.keys(req.body)[0]];
   switch (pressed_button) {
     case '1':
-      res.locals.title = "WITHDRAW";
-      res.render("withdraw")
+      res.redirect("/withdraw")
       break;
     case '2':
-      res.locals.title = "DEPOSITE";
-      res.render("deposite")
+      res.redirect("/deposite")
       break;
     case '3':
-      db.query("select withdraw_amount, deposite_amount, transfer_amount, transfer_account_num, tran_time from trans where Cardno = ?  order by tran_num desc limit 3", [user_card_no], function (err, result){
-        if (err) {
-          console.log(err);
-        }
-        var wa_1 = result[0].withdraw_amount
-        var da_1 = result[0].deposite_amount
-        var tr_amount_1 = result[0].transfer_amount
-        var tr_acc_1 = result[0].transfer_account_num
-        var tr_time_1 = result[0].tran_time
-        var wa_2 = result[1].withdraw_amount
-        var da_2 = result[1].deposite_amount
-        var tr_amount_2 = result[1].transfer_amount
-        var tr_acc_2 = result[1].transfer_account_num
-        var tr_time_2 = result[1].tran_time
-        var wa_3 = result[2].withdraw_amount
-        var da_3 = result[2].deposite_amount
-        var tr_amount_3 = result[2].transfer_amount
-        var tr_acc_3 = result[2].transfer_account_num
-        var tr_time_3 = result[2].tran_time
-        res.locals.title = "MINISTATEMENT";
-        res.render("ministatement",{
-          
-          c_1_wa : wa_1,
-          c_1_da : da_1 ,
-          c_1_ta : tr_amount_1,
-          c_1_tac : tr_acc_1,
-          c_1_ti : tr_time_1,
-          c_2_wa : wa_2,
-          c_2_da : da_2,
-          c_2_ta : tr_amount_2,
-          c_2_tac : tr_acc_2,
-          c_2_ti : tr_time_2,
-          c_3_wa : wa_3,
-          c_3_da : da_3,
-          c_3_ta : tr_amount_3,
-          c_3_tac : tr_acc_3,
-          c_3_ti : tr_time_3
-        
-        })
-      });
+      res.redirect("/ministatement")
       break;
     case '4':
-      res.locals.title = "PINCHANGE";
-      res.render("pinchange")
+      res.redirect("/pinchange")
       break;
     case '5':
-      db.query("SELECT amount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result) {
-        if (err) {
-          console.log(err)
-        }
-        var balance = result[0].amount.toString();
-        req.session.message = {
-          type: "success",
-          message: "YOUR CURRENT ACCOUNT BALANCE IS " + balance + " Rs"
-        }
-        res.redirect("/transaction")
-      })
+      res.redirect("/balance")
       break;
     case '6':
-      res.locals.title = "TRANSFER";
-      res.render("transfer")
+      res.redirect("transfer")
       break;
     case '8':
-      user_session = false;
-      res.redirect("/homepage");
+      req.session.destroy((err) => {
+        if (err) throw err;
+        res.redirect("/");
+      });
       break;
     default:
-      user_session = false;
-      res.render("/homepage")
+      req.session.destroy((err) => {
+        if (err) throw err;
+        res.redirect("/");
+      });
   }
 });
 
