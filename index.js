@@ -303,7 +303,7 @@ app.post("/features", function(req, res) {
       res.redirect("/balance")
       break;
     case '6':
-      res.redirect("transfer")
+      res.redirect("/transfer")
       break;
     case '8':
       req.session.destroy((err) => {
@@ -498,10 +498,11 @@ app.post("/transfer", function(req, res){
   })
 });
 
-app.post("/pinchange", function(req, res){
+app.post("/pinchange", async function(req, res){
   var new_pin = parseInt(req.body.new_pin);
   if ((new_pin >= 100000) && (new_pin < 999999)){
-    db.query("UPDATE  user_data SET  user_data.pin_num = ? WHERE  Cardno = ?", [new_pin, user_card_no], function(err, result){
+    var hasdpin = await bcrypt.hash(new_pin.toString(), 10);
+    db.query("UPDATE  user_data SET  user_data.pin_num = ? WHERE  Cardno = ?", [hasdpin, user_card_no], function(err, result){
       if(err){
         console.log(err);
       }
