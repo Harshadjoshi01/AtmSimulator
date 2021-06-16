@@ -1,31 +1,63 @@
 <%- include('header'); -%>
-<% if (message) { %>
-<div style="text-align: center" class="alert alert-<%= message.type %>">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong> <%= message.message %></strong>
-</div>
-<% } %>
-<div style="text-align: center">
-  <h1>Fill the form to get your credit card no.</h1>
-  <div>
-    <form action="/addmember" method="POST">
-      <label for="username">Username</label>
-      <input type="text" name="username" placeholder="user_name" required autofocus>
-      <br>
-      <label for="username">Email</label>
-      <input type="email" name="email" placeholder="user_email" required>
-      <br>
-      <label for="username">Mobile No.</label>
-      <input type="text" name="mobileno" placeholder="user_mobileno" required>
-      <br>
-      <button class="btn btn-primary" type="submit" name="submit">Send</button>
-      <br>
-    </form>
-  </div>
-  <div>
-    <a href="/"><button class="btn btn-primary">Homepage</button></a>
-  </div>
-</div>
+  <% if (message) { %>
+    <div style="text-align: center" class="alert alert-<%= message.type %>">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>
+        <%= message.message %>
+      </strong>
+    </div>
+    <% } %>
+
+    
+      <div class="row member-container ">
+        <div class="col-lg-6 left-col">
+          <div class="row header-title">
+            <h2>Welcome to<br>ATM simulator</h2>
+          </div>
+          <div class="row context">
+            <h4 class="context-title">About</h4>
+            <p>This simlator won’t consume your time because we know how pricious your time, we value your time.</p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="row signup">
+            <div>
+
+              <div class="form-title">
+                <div class="animate-icon">
+                  <lord-icon
+                  src="https://cdn.lordicon.com//eszyyflr.json"
+                  trigger="loop"
+                  colors="primary:#e4e2e2,secondary:#fcb4b4"
+                  style="width:100px;height:100px">
+              </lord-icon>                
+                </div>
+                <h4>Fill this below form to get your 
+                  credit card No. and one time pin</h4>
+              </div>
+              <form action="/addmember" method="POST">
+                <label for="username">Username</label>
+                <input type="text" name="username" placeholder="user_name" required autofocus>
+                <br>
+                <label for="username">Email</label>
+                <input type="email" name="email" placeholder="user_email" required>
+                <br>
+                <label for="username">Mobile No.</label>
+                <input type="text" name="mobileno" placeholder="user_mobileno" required>
+                <br>
+
+                <div class="buttons">
+                  <button class="btn submit" type="submit" name="submit">Submit</button>
+                  <a href="/"><button class="btn homepage">Homepage</button></a>
+                </div>
+
+                <br>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
 
 
-<%- include('footer'); -%>
+      <%- include('footer'); -%>

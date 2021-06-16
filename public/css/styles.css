@@ -1,6 +1,136 @@
-body {
-    background-color: #E4E9FD;
-    background-image: -webkit-linear-gradient(65deg, #A683E3 50%, #E4E9FD 50%);
-    min-height: 1000px;
-    font-family: 'helvetica neue';
-  }
+.member-container {
+  background: url("/assests/welcome.png");
+  min-height: 100vh;
+  text-align: center;
+  background-repeat: no-repeat;
+  margin: 1rem;
+  border-radius: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left-col {
+  /* padding-left: 2rem; */
+  padding-right: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+
+
+.member-container .context {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* flex-direction: column; */
+  margin-top: 5rem;
+  padding: 0 5rem;
+}
+
+.member-container .context p {
+    color: #575757;
+    line-height: 1.6rem;
+    font-size: 1rem;
+}
+.member-container .signup {
+  background: rgba(105, 105, 105, 0.4);
+  backdrop-filter: blur(4px);
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10rem;
+}
+.member-container .signup .form-title {
+  padding: 1rem;
+  /* font-family: Podkova VF Beta; */
+  font-style: normal;
+  font-weight: normal;
+  font-size: 35px;
+  line-height: 39px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+background: #464646a9;
+border-radius: 30px;
+margin-bottom: 1rem;
+  color: #e4e2e2;
+}
+.member-container .signup label {
+  font-size: 1.3rem;
+  color: #525252;
+  display: inline-block;
+  *display: inline; /* for IE7*/
+  zoom: 1; /* for IE7*/
+  /* float: left; */
+  padding-top: 5px;
+  text-align: right;
+  width: 140px;
+  /* float: left; */
+}
+
+input {
+  border: none;
+  font-size: 1.3rem;
+  background: #ffffff;
+  border: 0.5px solid #000000;
+  border-radius: 20px;
+  outline: none;
+  padding: 0.3rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: inline-block;
+  *display: inline; /* for IE7*/
+  zoom: 1; /* for IE7*/
+  vertical-align: middle;
+  margin-left: 20px;
+}
+::placeholder {
+  text-align: center;
+}
+
+.btn {
+    width: 10rem;
+}
+.member-container .signup .btn {
+  border: 0.5px solid #000000;
+  box-sizing: border-box;
+  border-radius: 20px;
+  margin: 1rem;
+  font-size: 1.3rem;
+  transition: .3s all ease;
+}
+
+.member-container .signup .homepage {
+    background: #F4F4F4;
+    color: #525252;
+    transition: .3s all ease;
+}
+.member-container .signup .homepage:hover {
+    background: #FCB4B4;
+}
+.submit{
+    background: #FCB4B4;
+    color: #525252;
+}
+.submit:hover {
+    background: #F4F4F4 ;
+    color: #525252;
+}
+
+
+
+
+
+
+
+footer {
+    background: #FCB4B4;
+    border-radius: 30px;
+    text-align: center;
+    color: #575757;
+    margin: 0rem 1rem;
+}
