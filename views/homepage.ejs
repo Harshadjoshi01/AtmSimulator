@@ -1,19 +1,39 @@
 <%- include('header'); -%>
   <% if (message) { %>
     <div style="text-align: center" class="alert alert-<%= message.type %>">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong> <%= message.message %></strong>
-      </div>
-  <% } %>
-  <div style="text-align: center">
-    <h1>Enter your card number</h1>
-    <div>
-      <form action="/pin" method="POST">
-        <input type="text" name="Cardno" placeholder="card_no" required autofocus>
-        <button class="btn btn-primary" type="submit" name="submit">Insert</button>
-      </form>
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>
+        <%= message.message %>
+      </strong>
     </div>
-    <a href="/addmember"><button class="btn btn-primary">Fill Form</button></a>
-  </div>
-  
-<%- include('footer'); -%>
+    <% } %>
+
+      <div class="homepage-container">
+        <div class="left-col">
+          <div class="content">
+            <div class="header-title">
+              <h1>Enter your Card Number</h1>
+            </div>
+            <div class="signup">
+
+              <form action="/pin" method="POST">
+                <input type="text" name="Cardno" placeholder="card_no" required autofocus><br>
+                <button class="btn" type="submit" name="submit">Insert</button>
+              </form>
+
+            </div>
+
+            <div class="form-footer">
+              <h4>New User ? <br> Sign Up here !</h4>
+              <a href="/addmember"><button class="btn">Fill Form</button></a>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+
+
+
+      <%- include('footer'); -%>

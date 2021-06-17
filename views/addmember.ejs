@@ -8,7 +8,7 @@
     </div>
     <% } %>
 
-    
+
       <div class="row member-container ">
         <div class="col-lg-6 left-col">
           <div class="row header-title">
@@ -21,21 +21,18 @@
         </div>
         <div class="col-lg-6">
           <div class="row signup">
-            <div>
+            <div class="form">
 
               <div class="form-title">
                 <div class="animate-icon">
-                  <lord-icon
-                  src="https://cdn.lordicon.com//eszyyflr.json"
-                  trigger="loop"
-                  colors="primary:#e4e2e2,secondary:#fcb4b4"
-                  style="width:100px;height:100px">
-              </lord-icon>                
+                  <lord-icon src="https://cdn.lordicon.com//eszyyflr.json" trigger="loop"
+                    colors="primary:#e4e2e2,secondary:#fcb4b4" style="width:100px;height:100px">
+                  </lord-icon>
                 </div>
-                <h4>Fill this below form to get your 
+                <h4>Fill this below form to get your
                   credit card No. and one time pin</h4>
               </div>
-              <form action="/addmember" method="POST">
+              <form class="main-form" action="/addmember" method="POST">
                 <label for="username">Username</label>
                 <input type="text" name="username" placeholder="user_name" required autofocus>
                 <br>
@@ -45,18 +42,15 @@
                 <label for="username">Mobile No.</label>
                 <input type="text" name="mobileno" placeholder="user_mobileno" required>
                 <br>
-
-                <br>
-
+                <button class="btn submit" type="submit" name="submit">Submit</button>
               </form>
-            </div>
 
-            <div class="buttons">
-              <button class="btn submit" type="submit" name="submit">Submit</button>
-              <a href="/"><button class="btn homepage">Home</button></a>
 
             </div>
-
+            <div class="form-footer">
+              <h4>Already existing customer ? </h4>
+              <a href="/"><button class="btn homepage">Login</button></a>
+            </div>
           </div>
         </div>
 
