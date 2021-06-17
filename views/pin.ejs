@@ -1,18 +1,39 @@
 <%- include('header'); -%>
-<% if (message) { %>
-<div style="text-align: center" class="alert alert-<%= message.type %>">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong> <%= message.message %></strong>
-</div>
-<% } %>
-<div style="text-align: center">
-  <h1>Enter Your PIN num here</h1>
-  <div>
-    <form action="/transaction" method="POST">
-      <input type="password" name="pin_no" placeholder="pin_no" required autofocus>
-      <button class="btn btn-primary" type="submit" name="submit">Insert</button>
-    </form>
-  </div>
-</div>
+  <% if (message) { %>
+    <div style="text-align: center" class="alert alert-<%= message.type %>">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>
+        <%= message.message %>
+      </strong>
+    </div>
+    <% } %>
 
-<%- include('footer'); -%>
+
+      <div class="homepage-container pin-page">
+        <div class="left-col">
+          <div class="content">
+            <i class="fas fa-user-lock"></i>
+            <div class="header-title">
+              <h1>Enter your Pin Number</h1>
+            </div>
+            <div class="signup">
+
+              <form action="/transaction" method="POST">
+                <input type="password" name="pin_no" placeholder="pin_no" required autofocus>
+                <button class="btn" type="submit" name="submit">Insert</button>
+              </form>
+            </div>
+            <!-- 
+            <div class="form-footer">
+              <h4>New User ? <br> Sign Up here !</h4>
+              <a href="/addmember"><button class="btn">Fill Form</button></a>
+            </div> -->
+
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <%- include('footer'); -%>

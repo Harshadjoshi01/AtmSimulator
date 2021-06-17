@@ -129,17 +129,21 @@ input {
   background: #f4f4f4;
   color: #525252;
   transition: 0.3s all ease;
+  outline: none;
 }
 .member-container .signup .homepage:hover {
-  background: #fcb4b4;
+  color: #f4f4f4;
+  background: #525252;
 }
 .submit {
   background: #fcb4b4;
   color: #525252;
+  margin-top: 3rem;
+  outline: none;
 }
 .submit:hover {
-  background: #f4f4f4;
-  color: #525252;
+  color: #f4f4f4;
+  background-color: #525252;
 }
 
 /* HOMEPAGE CSS */
@@ -192,10 +196,10 @@ input {
   color: #e4e2e2;
   height: 4rem;
 }
-.homepage-container a .btn:hover {
+/* .homepage-container a .btn:hover {
   background: #fcb4b4;
   color: #525252;
-}
+} */
 
 .form-footer {
   padding: 2rem;
@@ -208,6 +212,24 @@ input {
   border-radius: 30px;
   /* margin-bottom: 1rem; */
   color: #e4e2e2;
+}
+
+.form-footer .btn:hover {
+  background: #525252;
+  color: #f4f4f4;
+}
+/* PINPAGE */
+.pin-page {
+  background: url("/assets/pin.png");
+}
+.pin-page .signup {
+  padding: 1rem;
+}
+
+.fa,
+.fas {
+  margin-top: 1rem;
+  font-size: 4rem;
 }
 
 footer {
