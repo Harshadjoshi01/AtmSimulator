@@ -5,29 +5,29 @@
       <strong> <%= message.message %></strong>
     </div>
 <% } %>
-<div style="text-align: center">
+<div style="text-align: center" class="trans-container">
   <form action="/features" method="POST">
-    <div class="row">
+    <div class="row btn-container">
       <div class="col-sm-4">
-        <button class="btn btn-success btn-lg" type="submit" name="withdraw_cash" value="1">Withdraw Cash</button>
+        <button class="btn btn-trans btn-lg" type="submit" name="withdraw_cash" value="1">Withdraw Cash</button>
         <br>
-        <button class="btn btn-dark btn-lg" type="submit" name="deposite_cash" value="2">Deposite Cash</button>
+        <button class="btn btn-trans btn-lg" type="submit" name="deposite_cash" value="2">Deposit Cash</button>
         <br>
       </div>
       <div class="col-sm-4">
-        <button class="btn btn-warning btn-lg" type="submit" name="mini_statement" value="3">Mini Statement</button>
+        <button class="btn btn-trans btn-lg" type="submit" name="mini_statement" value="3">Mini Statement</button>
         <br>
-        <button class="btn btn-secondary btn-lg" type="submit" name="pin_change" value="4">Pin Change</button>
+        <button class="btn btn-trans btn-lg" type="submit" name="pin_change" value="4">Pin Change</button>
         <br>
       </div>
       <div class="col-sm-4">
-        <button class="btn btn-success btn-lg" type="submit" name="balance_inquary" value="5">Balance Inquary</button>
+        <button class="btn btn-trans btn-lg" type="submit" name="balance_inquary" value="5">Balance Inquiry</button>
         <br>
-        <button class="btn btn-dark btn-lg" type="submit" name="transfer_cash" value="6">Transfer Cash</button>
+        <button class="btn btn-trans btn-lg" type="submit" name="transfer_cash" value="6">Transfer Cash</button>
         <br>
       </div>
     </div>
-    <button class="btn btn-danger btn-lg" type="submit" name="exit" value="8">EXIT</button>
+    <button class="btn btn-exit btn-lg" type="submit" name="exit" value="8"><i class="fas fa-sign-out-alt"></i> EXIT</button>
     <br>
   </form>
 </div>
