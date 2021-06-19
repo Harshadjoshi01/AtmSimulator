@@ -232,10 +232,13 @@ input {
   font-size: 4rem;
 }
 
-footer {
+.footer {
   background: #fcb4b4;
   border-radius: 30px;
   text-align: center;
   color: #575757;
-  margin: 0rem 1rem;
+  margin: 0rem 0rem;
+  bottom: 0;
+  position: fixed;
+  width: 100%;
 }
