@@ -124,6 +124,11 @@ app.get("/deposite", isAuth, function(req, res) {
   res.render("deposite");
 });
 
+app.get("/team", function(req, res) {
+  res.locals.title = "TEAM";
+  res.render("team");
+});
+
 app.get("/ministatement", isAuth, function(req, res) {
   db.query("select withdraw_amount, deposite_amount, transfer_amount, transfer_account_num, tran_time from trans where Cardno = ?  order by tran_num desc limit 3", [user_card_no], function (err, result){
     if (err) {

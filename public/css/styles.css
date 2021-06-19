@@ -9,10 +9,15 @@ body {
   min-height: 100%;
 }
 
+:root {
+  --palepink: #fcb4b4;
+  --darkGrey: #525252;
+}
+
 /* /////////////////////ADD-MEMBER//////////////////////////// */
 
 .member-container {
-  background: url("/assets/welcome.png");
+  background: url("/assets/addmember.png");
   min-height: 85vh;
   text-align: center;
   background-repeat: no-repeat;
@@ -67,7 +72,7 @@ body {
 }
 .member-container .signup label {
   font-size: 1.3rem;
-  color: #525252;
+  color: var(--darkGrey);
   display: inline-block;
   *display: inline; /* for IE7*/
   zoom: 1; /* for IE7*/
@@ -115,7 +120,7 @@ input {
   margin: 1rem;
   font-size: 1.3rem;
   transition: 0.3s all ease;
-  background: #fcb4b4;
+  background: var(--palepink);
   color: #575757;
   transition: 0.3s all ease;
   outline: none;
@@ -124,28 +129,28 @@ input {
 
 .btn:hover {
   color: #f4f4f4;
-  background: #525252;
+  background: var(--darkGrey);
 }
 
 .member-container .signup .homepage {
   background: #f4f4f4;
-  color: #525252;
+  color: var(--darkGrey);
   transition: 0.3s all ease;
   outline: none;
 }
 .member-container .signup .homepage:hover {
   color: #f4f4f4;
-  background: #525252;
+  background: var(--darkGrey);
 }
 .submit {
-  background: #fcb4b4;
-  color: #525252;
+  background: var(--palepink);
+  color: var(--darkGrey);
   /* margin-top: 3rem; */
   outline: none;
 }
 .submit:hover {
   color: #f4f4f4;
-  background-color: #525252;
+  background-color: var(--darkGrey);
 }
 
 /* ----------------------HOMEPAGE CSS=------------------- */
@@ -194,8 +199,8 @@ input {
 }
 
 /* .homepage-container a .btn:hover {
-  background: #fcb4b4;
-  color: #525252;
+  background: var(--palepink);
+  color: var(--darkGrey);
 } */
 
 .form-footer {
@@ -264,7 +269,7 @@ input {
   box-shadow: 10px #000;
   border: none;
 
-  background: #525252;
+  background: var(--darkGrey);
   color: #f4f4f4;
 }
 .btn-trans:hover {
@@ -306,7 +311,7 @@ input {
 .inner-trans label {
   padding-right: 1rem;
   font-size: 2rem;
-  color: #525252;
+  color: var(--darkGrey);
   display: inline-block;
   *display: inline; /* for IE7*/
   zoom: 1; /* for IE7*/
@@ -322,7 +327,7 @@ input {
   padding: 1rem;
 }
 .inner-trans .btn-inner {
-  background: #525252;
+  background: var(--darkGrey);
   color: #f4f4f4;
 }
 .inner-trans .btn-inner:hover {
@@ -345,16 +350,62 @@ input {
 
 .default-h1 {
   margin-top: 25px;
-  /* background-color: #fcb4b4; */
+  /* background-color: var(--palepink); */
   color: #575757;
   /* border-radius: 30px; */
 }
 
-/* -----------------FOOTER ----------------- */
-.footer {
-  background: #fcb4b4;
-  color: #525252;
+.teams {
+  background: url("/assets/teams.png");
+  min-height: 85vh;
+  text-align: center;
+  background-repeat: no-repeat;
+  margin: 1rem;
+  border-radius: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.teams-footer {
+  background: var(--palepink);
+  color: var(--darkGrey);
   border-radius: 30px;
   text-align: center;
   margin: 1rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.teams-footer a {
+  color: var(--darkGrey);
+  text-decoration: none;
+  transition: 0.3s all ease;
+}
+.teams-footer a:hover {
+  color: black;
+}
+.teams-footer a:visited a:active {
+  color: var(--darkGrey);
+}
+
+/* -----------------FOOTER ----------------- */
+.footer {
+  background: var(--palepink);
+  color: var(--darkGrey);
+  border-radius: 30px;
+  text-align: center;
+  margin: 1rem;
+}
+.footer a {
+  color: var(--darkGrey);
+  text-decoration: none;
+  transition: 0.3s all ease;
+}
+.footer a:hover {
+  color: black;
+}
+.footer a:visited a:active {
+  color: var(--darkGrey);
 }
