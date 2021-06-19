@@ -9,6 +9,8 @@ body {
   min-height: 100%;
 }
 
+/* /////////////////////ADD-MEMBER//////////////////////////// */
+
 .member-container {
   background: url("/assets/welcome.png");
   min-height: 85vh;
@@ -146,7 +148,7 @@ input {
   background-color: #525252;
 }
 
-/* HOMEPAGE CSS */
+/* ----------------------HOMEPAGE CSS=------------------- */
 
 .homepage-container {
   background: url("/assets/homepage(2).png");
@@ -218,7 +220,8 @@ input {
   background: #0f77be;
   color: #fbc100;
 }
-/* PINPAGE */
+
+/* -----------------PINPAGE -----------------*/
 .pin-page {
   background: url("/assets/pin.png");
 }
@@ -231,6 +234,8 @@ input {
   margin-top: 1rem;
   font-size: 4rem;
 }
+
+/* -----------------TRANSACTION----------------- */
 
 .trans-container {
   background: url("/assets/system(2).png");
@@ -281,6 +286,8 @@ input {
   font-size: inherit;
 }
 
+/* -----------------INSIDE TRANSACTION----------------- */
+
 .inner-trans {
   background: url("/assets/inner-trans.png");
   min-height: 85vh;
@@ -322,15 +329,7 @@ input {
   background: rgb(199, 35, 35);
 }
 
-.footer {
-  background: #fcb4b4;
-  color: #525252;
-  border-radius: 30px;
-  text-align: center;
-  margin: 1rem;
-}
-
-/* MINISTATEMENT */
+/* -----------------MINISTATEMENT -----------------*/
 .ministatement-table {
   background: rgba(105, 105, 105, 0.4);
   backdrop-filter: blur(4px);
@@ -349,4 +348,13 @@ input {
   /* background-color: #fcb4b4; */
   color: #575757;
   /* border-radius: 30px; */
+}
+
+/* -----------------FOOTER ----------------- */
+.footer {
+  background: #fcb4b4;
+  color: #525252;
+  border-radius: 30px;
+  text-align: center;
+  margin: 1rem;
 }
