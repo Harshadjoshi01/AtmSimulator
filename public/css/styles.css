@@ -237,8 +237,22 @@ input {
   border-radius: 30px;
   text-align: center;
   color: #575757;
-  margin: 0rem 0rem;
+  padding: 0rem 2rem 0rem 2rem;
   bottom: 0;
   position: fixed;
   width: 100%;
+}
+
+/* MINISTATEMENT */
+.ministatement-table {
+  margin-top: 120px;
+  border-radius: 30px;
+
+}
+
+.default-h1 {
+  margin-top: 25px;
+  background-color: #fcb4b4;
+  color: #575757;
+  border-radius: 30px
 }
