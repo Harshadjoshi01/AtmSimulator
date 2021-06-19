@@ -1,10 +1,16 @@
 <%- include('header'); -%>
-  <div style="text-align: center">
-    <h1 class="default-h1">You can't Deposite more then 10,000 at one time !</h1>
+  <div class="inner-trans">
+    <h1 class="default-h1">You can't Deposit more than 10,000₹ at one time !</h1>
     <form action="/deposite" method="POST">
-      <label for="amount">Amout</label>
-      <input type="number" name="amount" min="1000" max="10000"autofocus required><br>
-      <button type="submit" class = "btn btn-primary btn-lg" name="button">DEPOSITE</button>
+      <div class="inner">
+        <label for="amount">Amout</label>
+        <input type="number" name="amount" min="1000" max="10000"autofocus required><br>
+      </div>
+     
+      <div class="btn-inner-div">
+        <button type="submit" class = "btn btn-inner btn-lg" name="button">DEPOSIT</button>
+
+      </div>
     </form>
 
   </div>

@@ -1,12 +1,21 @@
 <%- include('header'); -%>
-<div class="form-group" style="text-align: center">
+<div class="inner-trans form-group">
   <form action="/transfer" method="POST">
-    <h1 class="default-h1">You can't tranfer more then 100,000 at one time !</h1><br>
-    <label for="account_number">Account number to whome you want to send money</label>
-    <input type="text" name="account_num" autofocus required><br>
-    <label for="Amount">Amount</label>
-    <input type="number" name="amount_tranfer" min="1000" max="100000"required><br>
-    <button type="submit" class="btn btn-primary btn-lg"name="tranfer">TRANSFER</button><br>
+    <h1 class="default-h1">You can't tranfer more than 100,000₹ at one time !</h1><br>
+    <div class="inner">
+      <label for="account_number">Reciever's Account Number</label>
+      <input type="text" name="account_num" autofocus required><br>
+    </div>
+
+    <div class="inner">
+      <label for="Amount">Amount</label>
+      <input type="number" name="amount_tranfer" min="1000" max="100000"required><br>
+
+    </div>
+    <div class="btn-inner-div">
+      <button type="submit" class="btn btn-inner btn-lg"name="tranfer">TRANSFER</button><br>
+
+    </div>
   </form>
 </div>
 <%- include('footer'); -%>

@@ -11,7 +11,7 @@ body {
 
 .member-container {
   background: url("/assets/welcome.png");
-  min-height: 100vh;
+  min-height: 85vh;
   text-align: center;
   background-repeat: no-repeat;
   margin: 1rem;
@@ -150,7 +150,7 @@ input {
 
 .homepage-container {
   background: url("/assets/homepage(2).png");
-  min-height: 100vh;
+  min-height: 85vh;
   text-align: center;
   background-repeat: no-repeat;
   margin: 1rem;
@@ -281,6 +281,47 @@ input {
   font-size: inherit;
 }
 
+.inner-trans {
+  background: url("/assets/inner-trans.png");
+  min-height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 1rem;
+  border-radius: 30px;
+}
+.inner-trans .inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.inner-trans label {
+  padding-right: 1rem;
+  font-size: 2rem;
+  color: #525252;
+  display: inline-block;
+  *display: inline; /* for IE7*/
+  zoom: 1; /* for IE7*/
+}
+.inner-trans input {
+  font-size: 1.8rem;
+}
+
+.inner-trans .btn-inner-div {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding: 1rem;
+}
+.inner-trans .btn-inner {
+  background: #525252;
+  color: #f4f4f4;
+}
+.inner-trans .btn-inner:hover {
+  background: rgb(199, 35, 35);
+}
+
 .footer {
   background: #fcb4b4;
   color: #525252;
@@ -291,13 +332,21 @@ input {
 
 /* MINISTATEMENT */
 .ministatement-table {
-  margin-top: 120px;
+  background: rgba(105, 105, 105, 0.4);
+  backdrop-filter: blur(4px);
   border-radius: 30px;
+}
+
+.ministatement-table th {
+  padding: 0.7rem;
+}
+.ministatement-table td {
+  padding: 0.7rem;
 }
 
 .default-h1 {
   margin-top: 25px;
-  background-color: #fcb4b4;
+  /* background-color: #fcb4b4; */
   color: #575757;
-  border-radius: 30px;
+  /* border-radius: 30px; */
 }
