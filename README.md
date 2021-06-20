@@ -100,11 +100,13 @@ nodemon --delay 2.5
 
 Nodemon is not perfect, and CLI arguments has sprawled beyond where I'm completely happy, but perhaps it can be reduced a little one day.
 
-<!-- ## Teams
+## Teams
 
-Thank you to all [our backers](https://opencollective.com/nodemon#backer)! 🙏
+Thanks to ~ 🙏
 
-[![nodemon backers](https://opencollective.com/nodemon/backers.svg?width=890)](https://opencollective.com/nodemon#backers) -->
+<p align="center">
+  <img src="https://github.com/micro-hawk/AtmSimulator/blob/master/public/screenshots/team.png" alt="atmsimulator Logo">
+</p>
 
 # License
 
