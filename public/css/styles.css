@@ -1,7 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap");
+
 * {
   padding: 0;
   margin: 0;
   outline: none;
+  font-family: "Nunito Sans", sans-serif;
   text-decoration: none;
 }
 html,
@@ -76,18 +79,14 @@ body {
   display: inline-block;
   *display: inline; /* for IE7*/
   zoom: 1; /* for IE7*/
-  /* float: left; */
-  /* padding-top: 5px; */
   text-align: left;
   width: 120px;
-  /* float: left; */
 }
 
 input {
   border: none;
   font-size: 1.3rem;
   background: #ffffff;
-  /* border: 0.5px solid #000000; */
   border-radius: 20px;
   outline: none;
   padding: 0.3rem;
@@ -103,9 +102,6 @@ input {
   padding: 0.6rem 0 0.6rem 0;
 }
 
-/* .form input {
-  margin-left: 20px;
-} */
 ::placeholder {
   text-align: center;
 }
@@ -197,11 +193,6 @@ input {
   font-size: 2rem;
   line-height: 39px;
 }
-
-/* .homepage-container a .btn:hover {
-  background: var(--palepink);
-  color: var(--darkGrey);
-} */
 
 .form-footer {
   padding: 0.8rem;
