@@ -18,11 +18,11 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 var options = {
-  host: process.env.DATABASE_HOST,
-  port: process.env.DATABASE_PORT,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
+  host: process.env.HOST,
+  port: process.env.PORT,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.NAME,
   insecureAuth: true,
   	// Whether or not to automatically check for and clear expired sessions:
 	clearExpired: true,
