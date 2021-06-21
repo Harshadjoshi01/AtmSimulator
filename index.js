@@ -98,7 +98,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-var user_session = false;
+var user_card_no = 0;
 app.get("/", function(req, res) {
   res.locals.title = "HOMEPAGE";
   res.render("homepage")
@@ -130,45 +130,58 @@ app.get("/team", function(req, res) {
 });
 
 app.get("/ministatement", isAuth, function(req, res) {
-  db.query("select withdraw_amount, deposite_amount, transfer_amount, transfer_account_num, tran_time from trans where Cardno = ?  order by tran_num desc limit 3", [user_card_no], function (err, result){
-    if (err) {
-      console.log(err);
+  db.query("SELECT transcount FROM user_data WHERE Cardno = ?", [user_card_no], function(err, result){
+    if(err) {
+      console.log(err)
     }
-    var wa_1 = result[0].withdraw_amount
-    var da_1 = result[0].deposite_amount
-    var tr_amount_1 = result[0].transfer_amount
-    var tr_acc_1 = result[0].transfer_account_num
-    var tr_time_1 = result[0].tran_time
-    var wa_2 = result[1].withdraw_amount
-    var da_2 = result[1].deposite_amount
-    var tr_amount_2 = result[1].transfer_amount
-    var tr_acc_2 = result[1].transfer_account_num
-    var tr_time_2 = result[1].tran_time
-    var wa_3 = result[2].withdraw_amount
-    var da_3 = result[2].deposite_amount
-    var tr_amount_3 = result[2].transfer_amount
-    var tr_acc_3 = result[2].transfer_account_num
-    var tr_time_3 = result[2].tran_time
-    res.locals.title = "MINISTATEMENT";
-    res.render("ministatement",{
-      
-      c_1_wa : wa_1,
-      c_1_da : da_1 ,
-      c_1_ta : tr_amount_1,
-      c_1_tac : tr_acc_1,
-      c_1_ti : tr_time_1,
-      c_2_wa : wa_2,
-      c_2_da : da_2,
-      c_2_ta : tr_amount_2,
-      c_2_tac : tr_acc_2,
-      c_2_ti : tr_time_2,
-      c_3_wa : wa_3,
-      c_3_da : da_3,
-      c_3_ta : tr_amount_3,
-      c_3_tac : tr_acc_3,
-      c_3_ti : tr_time_3
-    
-    })
+    const user_trans_count = result[0].transcount;
+    if(user_trans_count >= 3){
+      db.query("select withdraw_amount, deposite_amount, transfer_amount, transfer_account_num, tran_time from trans where Cardno = ?  order by tran_num desc", [user_card_no], function (err, result){
+        if (err) {
+          console.log(err);
+        }
+        var wa_1 = result[0].withdraw_amount
+        var da_1 = result[0].deposite_amount
+        var tr_amount_1 = result[0].transfer_amount
+        var tr_acc_1 = result[0].transfer_account_num
+        var tr_time_1 = result[0].tran_time
+        var wa_2 = result[1].withdraw_amount
+        var da_2 = result[1].deposite_amount
+        var tr_amount_2 = result[1].transfer_amount
+        var tr_acc_2 = result[1].transfer_account_num
+        var tr_time_2 = result[1].tran_time
+        var wa_3 = result[2].withdraw_amount
+        var da_3 = result[2].deposite_amount
+        var tr_amount_3 = result[2].transfer_amount
+        var tr_acc_3 = result[2].transfer_account_num
+        var tr_time_3 = result[2].tran_time
+        res.locals.title = "MINISTATEMENT";
+        res.render("ministatement",{
+          
+          c_1_wa : wa_1,
+          c_1_da : da_1 ,
+          c_1_ta : tr_amount_1,
+          c_1_tac : tr_acc_1,
+          c_1_ti : tr_time_1,
+          c_2_wa : wa_2,
+          c_2_da : da_2,
+          c_2_ta : tr_amount_2,
+          c_2_tac : tr_acc_2,
+          c_2_ti : tr_time_2,
+          c_3_wa : wa_3,
+          c_3_da : da_3,
+          c_3_ta : tr_amount_3,
+          c_3_tac : tr_acc_3,
+          c_3_ti : tr_time_3
+        
+        })
+      });
+  
+    } else {
+      req.session.message = {type: "danger", message: "Please make atleast 3 transaction"}
+      res.redirect("/transaction")
+    }
+
   });
 });
 
@@ -248,8 +261,6 @@ app.post("/addmember", async (req, res) => {
 });
 
 // User loged in after log in validation of its card no and pin no and all features
-
-var user_card_no = 0;
 app.post("/pin", function(req, res) {
   user_card_no = req.body.Cardno;
   db.query("SELECT Cardno FROM user_data WHERE Cardno = ?", [user_card_no],function(err, result) {
@@ -363,11 +374,17 @@ app.post("/withdraw", function(req, res) {
           if(err){
             console.log(err);
           }
-          req.session.message = {
-            type: "success",
-            message: "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
-          }
-          res.redirect("/transaction")
+          db.query("UPDATE user_data SET user_data.transcount = user_data.transcount + 1 WHERE  Cardno = ?", [user_card_no], function(err, result){
+            
+            if (err){
+              console.log(err)
+            }
+            req.session.message = {
+              type: "success",
+              message: "YOUR ACCOUNT HAS BEEN DEBITED WITH " + req.body.amount.toString() + " Rs"
+            }
+            res.redirect("/transaction")
+          })
         });
       });
     } else {
@@ -412,11 +429,16 @@ app.post("/deposite", function(req, res) {
       if(err){
         console.log(err);
       }
-      req.session.message = {
-        type: "success",
-        message: "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
-      }
-      res.redirect("/transaction")
+      db.query("UPDATE user_data SET user_data.transcount = user_data.transcount + 1 WHERE  Cardno = ?", [user_card_no], function(err, result){
+        if(err){
+          console.log(err);
+        }
+        req.session.message = {
+          type: "success",
+          message: "YOUR ACCOUNT HAS BEEN CREDITED WITH " + req.body.amount.toString() + " Rs"
+        }
+        res.redirect("/transaction")
+      })
     });
   });
 });
@@ -466,31 +488,37 @@ app.post("/transfer", function(req, res){
             if(err){
               console.log(err);
             }
-            db.query("select Email from user_data where account_num = ?", [account_num], function(err, result){
-              if (err) {
+            db.query("UPDATE user_data SET user_data.transcount = user_data.transcount + 1 WHERE  Cardno = ?", [user_card_no], function(err, result){
+
+              if(err) {
                 console.log(err);
               }
-              let user_email = result[0].Email;
-              let msg = "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY CREDITED TO YOUR ACCOUNT FROM " + user_acc_num.toString() + " ACCOUNT HOLDER NAME " + user_name.toString() + "."
-                var mailOptions = {
-                  from: process.env.EMAIL,
-                  to: user_email,
-                  subject: 'Email From Atmsimulator',
-                  text: msg
-                };
-                transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                  console.log(error);
-                } else {
-                  console.log('Email sent: ' + info.response);
+              db.query("select Email from user_data where account_num = ?", [account_num], function(err, result){
+                if (err) {
+                  console.log(err);
                 }
+                let user_email = result[0].Email;
+                let msg = "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY CREDITED TO YOUR ACCOUNT FROM " + user_acc_num.toString() + " ACCOUNT HOLDER NAME " + user_name.toString() + "."
+                  var mailOptions = {
+                    from: process.env.EMAIL,
+                    to: user_email,
+                    subject: 'Email From Atmsimulator',
+                    text: msg
+                  };
+                  transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('Email sent: ' + info.response);
+                  }
+                })
               })
-            })
-            req.session.message = {
-              type: "success",
-              message: "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY TRANSFERED TO ACCOUNT NUMBER " + req.body.account_num.toString() 
-            }
-            res.redirect("/transaction")
+              req.session.message = {
+                type: "success",
+                message: "AMOUNT " + req.body.amount_tranfer.toString() + " Rs " + "SUCCESSFULLY TRANSFERED TO ACCOUNT NUMBER " + req.body.account_num.toString() 
+              }
+              res.redirect("/transaction")
+            });
           });
         });
       });
