@@ -260,7 +260,7 @@ app.post("/addmember", async (req, res) => {
   })
 });
 
-// User loged in after log in validation of its card no and pin no and all features
+// User loged in after log in validation of its card no and pin no and all
 app.post("/pin", function(req, res) {
   user_card_no = req.body.Cardno;
   db.query("SELECT Cardno FROM user_data WHERE Cardno = ?", [user_card_no],function(err, result) {
