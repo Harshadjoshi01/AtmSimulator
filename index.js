@@ -18,11 +18,11 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 var options = {
-  host: process.env.HOST,
-  port: process.env.PORT,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.NAME,
+  host: "bphafgg2i7k7khlskuaj-mysql.services.clever-cloud.com",
+  port: 3306,
+  user: "uwaziw5gjcmcgudy",
+  password: "hKHqbvN8LLfFBPbdvScJ",
+  database: "bphafgg2i7k7khlskuaj",
   insecureAuth: true,
   	// Whether or not to automatically check for and clear expired sessions:
 	clearExpired: true,
