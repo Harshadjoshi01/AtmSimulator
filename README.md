@@ -1,7 +1,4 @@
-<p align="center">
-  <img src="https://github.com/micro-hawk/AtmSimulator/blob/master/public/screenshots/addmember.png" alt="atmsimulator Logo">
-</p>
-
+![2021-06-19 18-23-27](https://user-images.githubusercontent.com/68471872/122708037-d700e280-d278-11eb-85e9-303054f9c444.gif)
 # ATM SIMULATOR
 
 nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected.
