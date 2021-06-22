@@ -68,6 +68,13 @@ const isAuth = (req, res, next) => {
   }
 }
 
+const isNotAuth = (req, res, next) => {
+  if (req.session.isNotAuth){
+    res.redirect("/transaction")
+  } else {
+    next();
+  }
+}
 // app.use(session({
 //   cookie: {
 //     maxAge: null
@@ -99,7 +106,11 @@ const transporter = nodemailer.createTransport({
 });
 
 var user_card_no = 0;
+var isLoggedIn = false;
 app.get("/", function(req, res) {
+  if (isLoggedIn){
+    res.redirect("/transaction");
+  }
   res.locals.title = "HOMEPAGE";
   res.render("homepage")
 });
@@ -225,30 +236,35 @@ app.post("/addmember", async (req, res) => {
       console.log(err)
     }
     if(result.length == 0){
-
-      var msg = "Your Card Number is " + card_no.toString() + " and Your Pin Number is " + pin_no.toString();
-      var mailOptions = {
-        from: process.env.EMAIL,
-        to: user_email,
-        subject: 'Sending Email using Node.js',
-        text: msg
-      };
-      transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
     db.query("INSERT INTO user_data (Username, Email, Mobileno, Cardno, pin_num) VALUES (?, ?, ?, ?, ?)", [user_name, user_email, user_mobileno, card_no, hasdPsw], function(err, result) {
       if (err) {
         console.log(err);
       }
+      db.query("SELECT account_num FROM user_data WHERE Email = ?",[user_email], function(err, result) {
+        if(err){
+          console.log(err);
+        }
+        let account_num = result[0].account_num;
+        var msg = "Your Account Number is " + account_num.toString() + " Your Card Number is " + card_no.toString() + " and Your Pin Number is " + pin_no.toString();
+        var mailOptions = {
+          from: process.env.EMAIL,
+          to: user_email,
+          subject: 'Email from ATMSIMULATOR',
+          text: msg
+        };
+        transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
       req.session.message = {
         type: "success",
         message: 'An Email is sent to your Email Address With Your Card Number and Pin Number'
       }
       res.redirect("/addmember")
+      });
     });
     } else {
       req.session.message = {
@@ -296,6 +312,7 @@ app.post("/transaction", function(req, res) {
       res.redirect("/")
     }
     req.session.isAuth = true;
+    isLoggedIn = true;
     res.locals.title = "TRANSCATION";
     res.redirect("/transaction")
   });
@@ -325,6 +342,7 @@ app.post("/features", function(req, res) {
     case '8':
       req.session.destroy((err) => {
         if (err) throw err;
+        isLoggedIn = false;
         res.redirect("/");
       });
       break;
