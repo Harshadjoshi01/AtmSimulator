@@ -68,9 +68,9 @@ const isAuth = (req, res, next) => {
   }
 }
 
-const isNotAuth = (req, res, next) => {
-  if (req.session.isNotAuth){
-    res.redirect("/transaction")
+const isAllowedloginpage = (req, res, next) => {
+  if(req.session.isAllowedloginpage){
+    res.redirect("/transaction");
   } else {
     next();
   }
@@ -106,11 +106,7 @@ const transporter = nodemailer.createTransport({
 });
 
 var user_card_no = 0;
-var isLoggedIn = false;
-app.get("/", function(req, res) {
-  if (isLoggedIn){
-    res.redirect("/transaction");
-  }
+app.get("/",isAllowedloginpage, function(req, res) {
   res.locals.title = "HOMEPAGE";
   res.render("homepage")
 });
@@ -291,7 +287,7 @@ app.post("/pin", function(req, res) {
       res.redirect("/")
     } else {
       res.locals.title = "PIN PAGE";
-      res.render("pin")
+      res.render("pin");
     }
   });
 });
@@ -302,7 +298,8 @@ app.post("/transaction", function(req, res) {
     if (err) {
       console.log(err);
     }
-    isMatch = await bcrypt.compare(entered_pin_no, result[0].pin_num);
+    var isMatch = await bcrypt.compare(entered_pin_no, result[0].pin_num);
+    console.log(isMatch);
 
     if(!isMatch) {
       req.session.message = {
@@ -310,13 +307,34 @@ app.post("/transaction", function(req, res) {
         message: 'PLEASE INSERT A VALID PIN NUMBER'
       }
       res.redirect("/")
+    } else {
+      const user_newsession_id = req.session.id;
+      db.query("select user_sid from user_data where Cardno = ?",[user_card_no], function(err, result){
+        if(err) {
+          console.log(err);
+        }
+        const user_previous_sid = result[0].user_sid;
+        db.query("DELETE FROM usersession WHERE user_session_id = ?",[user_previous_sid], function(err, result){
+          if (err) {
+            console.log(err);
+          }
+          db.query("UPDATE user_data SET user_sid = ? WHERE  Cardno = ?", [user_newsession_id, user_card_no], function (err, result){
+            if (err){
+              console.log(err);
+            } 
+            req.session.isAllowedloginpage = true;
+            req.session.isAuth = true;
+            res.locals.title = "TRANSCATION";
+            res.redirect("/transaction")
+  
+          });
+        });
+  
+      });
+
     }
-    req.session.isAuth = true;
-    isLoggedIn = true;
-    res.locals.title = "TRANSCATION";
-    res.redirect("/transaction")
   });
-})
+});
 
 app.post("/features", function(req, res) {
   var pressed_button = req.body[Object.keys(req.body)[0]];
@@ -342,7 +360,6 @@ app.post("/features", function(req, res) {
     case '8':
       req.session.destroy((err) => {
         if (err) throw err;
-        isLoggedIn = false;
         res.redirect("/");
       });
       break;
