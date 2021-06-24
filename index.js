@@ -41,42 +41,30 @@ var options = {
 };
 
 var sessionStore = new MySQLStore(options);
-// const db = mysql.createConnection(options);
-// db.connect(function(err) {
-//   if (err) {
-//     console.error('error connecting: ' + err.stack);
-//     return;
-//   }
- 
-//   console.log('connected as id ' + db.threadId);
-// });
-
-
-var connection;
-
-function handleDisconnect() {
-  connection = mysql.createConnection(options); // Recreate the connection, since
-                                                  // the old one cannot be reused.
-
-  connection.connect(function(err) {              // The server is either down
-    if(err) {                                     // or restarting (takes a while sometimes).
-      console.log('error when connecting to db:', err);
-      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-    }                                     // to avoid a hot loop, and to allow our node script to
-  });                                     // process asynchronous requests in the meantime.
-                                          // If you're also serving http, display a 503 error.
-  connection.on('error', function(err) {
-    console.log('db error', err);
+connectToDB = function () {
+  let db = mysql.createConnection(options);
+  db.connect(function(err) {
+    if (err) {
+      setTimeout(connectToDB, 2000);
+    }
+  });
+  db.on('error', function(err) {
+    //Error message
+    systemMessage("Error: " + err);
     if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      handleDisconnect();                         // lost due to either server restart, or a
+      connectToDB();                         // lost due to either server restart, or a
     } else {                                      // connnection idle timeout (the wait_timeout
       throw err;                                  // server variable configures this)
     }
   });
-}
 
-handleDisconnect();
+};
 
+systemMessage = function(message) {
+  console.log("====================================================");
+  console.log("Database is Reconnecting But the app will not crash");
+  console.log("====================================================");
+};
 
 app.use(
   session({
