@@ -2,7 +2,7 @@
 # ATM SIMULATOR
 
 
-The Website is hosted on Heroku Servers and Using Clever cloud MySql Database for storing user data ![Let's Go](https://atmsimulator.herokuapp.com/)
+The Website is hosted on Heroku Servers and Using Clever cloud MySql Database for storing user data [Let's Go](https://atmsimulator.herokuapp.com/)
 
 
 nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected.
