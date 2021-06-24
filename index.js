@@ -41,8 +41,9 @@ var options = {
 };
 
 var sessionStore = new MySQLStore(options);
+var db;
 connectToDB = function () {
-  let db = mysql.createConnection(options);
+  db = mysql.createConnection(options);
   db.connect(function(err) {
     if (err) {
       setTimeout(connectToDB, 2000);
