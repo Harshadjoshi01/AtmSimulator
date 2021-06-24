@@ -66,6 +66,9 @@ systemMessage = function(message) {
   console.log("====================================================");
 };
 
+connectToDB();
+console.log("Application is Running");
+
 app.use(
   session({
     secret: "secret",
