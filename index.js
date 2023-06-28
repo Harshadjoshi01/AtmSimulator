@@ -18,49 +18,51 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 var options = {
-  host: process.env.DATABASEHOST, 
-  port: process.env.DATABASEPORT,    
-  user: process.env.DATABASEUSER,   
-  password: process.env.DATABASEPASSWORD, 
-  database: process.env.DATABASENAME,     
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   insecureAuth: true,
-  	// Whether or not to automatically check for and clear expired sessions:
-	clearExpired: true,
-	// How frequently expired sessions will be cleared; milliseconds:
-	checkExpirationInterval: 100000,
-	// The maximum age of a valid session; milliseconds:
-	expiration: 600000,
+  // Whether or not to automatically check for and clear expired sessions:
+  clearExpired: true,
+  // How frequently expired sessions will be cleared; milliseconds:
+  checkExpirationInterval: 100000,
+  // The maximum age of a valid session; milliseconds:
+  expiration: 600000,
   schema: {
-		tableName: 'usersession',
-		columnNames: {
-			session_id: 'user_session_id',
-			expires: 'session_expires',
-			data: 'user_data'
-		}
-	}
+    tableName: 'usersession',
+    columnNames: {
+      session_id: 'user_session_id',
+      expires: 'session_expires',
+      data: 'user_data'
+    }
+  }
 };
 
 var sessionStore = new MySQLStore(options);
 var db;
-connectToDB = function () {
-  db = mysql.createConnection(options);
-  db.connect(function(err) {
+// we have to create a new connection pool as the old one cannot be reused after the connection is closed
+var connectToDB = function() {
+  db = mysql.createPool(options);
+  db.getConnection(function(err, connection) {
     if (err) {
-      setTimeout(connectToDB, 2000);
+      console.log("error when connecting to db:", err);
+      setTimeout(connectToDB, 2000); // We introduce a delay before attempting to reconnect,
+    } else {
+      console.log("Database Connected");
+      connection.release();
     }
   });
-  db.on('error', function(err) {
-    //Error message
-    systemMessage("Error: " + err);
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      connectToDB();                         // lost due to either server restart, or a
-    } else {                                      // connnection idle timeout (the wait_timeout
-      throw err;                                  // server variable configures this)
+  db.on("error", function(err) {
+    console.log("Database Error", err);
+    if (err.code === "PROTOCOL_CONNECTION_LOST") {
+      connectToDB();
+    } else {
+      throw err;
     }
   });
-
 };
-
 systemMessage = function(message) {
   console.log("====================================================");
   console.log("Database is Reconnecting But the app will not crash");
@@ -78,6 +80,7 @@ app.use(
     store: sessionStore
   })
 );
+
 
 const isAuth = (req, res, next) => {
   if(req.session.isAuth) {
